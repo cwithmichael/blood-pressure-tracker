@@ -2,7 +2,8 @@
   <div id="history" class="small" style="margin-top:20px">
     <h2 class="text-center">History</h2>
     <div class="container-fluid text-center">
-      <line-chart :chart-data="datacollection" :options="options"></line-chart>
+      <line-chart v-if="doneLoading" :chart-data="datacollection" :options="options"></line-chart>
+      <p v-else class="text-center">Loading</p>
     </div>
     <br />
   </div>
@@ -24,6 +25,7 @@ export default {
   data() {
     return {
       datacollection: {},
+      doneLoading: false,
       options: {
         scales: {
           xAxes: [
@@ -37,9 +39,10 @@ export default {
       }
     };
   },
-  mounted() {
+  created() {
     this.$store.dispatch("getAllReadings").then(() => {
       this.fillData();
+      this.doneLoading = true;
     });
   },
   methods: {

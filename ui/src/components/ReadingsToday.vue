@@ -1,10 +1,15 @@
 
 <template>
   <div id="readings-today">
-    <h3 class="text-center" style="margin-top:20px; font-family: 'Libre Baskerville', serif;">Today's Readings</h3>
+    <h3
+      class="text-center"
+      style="margin-top:20px; font-family: 'Libre Baskerville', serif;"
+    >Today's Readings</h3>
     <h4
       class="text-center"
     >Average Systolic: {{ getAverageSystolic() }} | Average Diastolic: {{ getAverageDiastolic() }}</h4>
+    <p v-if="loading" class="text-center">Loading...</p>
+    <div v-else>
     <table class="table tale-sm table-bordered">
       <thead>
         <tr>
@@ -34,21 +39,22 @@
         </tr>
       </tbody>
     </table>
-    <AddReading/>
+    </div>
+    <AddReading />
   </div>
 </template>
 
 <script>
-import AddReading from './AddReading.vue';
+import AddReading from "./AddReading.vue";
 import { mapGetters, mapActions } from "vuex";
-import moment from 'moment';
+import moment from "moment";
 
 export default {
   components: {
-    AddReading,
+    AddReading
   },
   computed: {
-    ...mapGetters(["readingsForToday"]),
+    ...mapGetters(["readingsForToday"])
   },
   data() {
     return {
@@ -59,11 +65,9 @@ export default {
     };
   },
   methods: {
-    ...mapActions([
-      'deleteReading'
-    ]),
+    ...mapActions(["deleteReading"]),
     prettifyDate(date) {
-      return moment(date).format("h:mm:ss a")
+      return moment(date).format("h:mm:ss a");
     },
     getReadingClass(reading) {
       if (reading.systolic > 120 || reading.diastolic > 80) {
@@ -77,9 +81,8 @@ export default {
         systolic.push(reading.systolic);
       });
       var total = systolic.reduce((acc, c) => acc + c, 0);
-      if (systolic.length > 0)
-        return Math.floor(total / systolic.length);
-      return 0
+      if (systolic.length > 0) return Math.floor(total / systolic.length);
+      return 0;
     },
     getAverageDiastolic() {
       var diastolic = [];
@@ -87,13 +90,14 @@ export default {
         diastolic.push(reading.diastolic);
       });
       var total = diastolic.reduce((acc, c) => acc + c, 0);
-      if (diastolic.length > 0)
-        return Math.floor(total / diastolic.length);
-      return 0
-    },
-    created() {
-      this.$store.dispatch('getAllReadings');
+      if (diastolic.length > 0) return Math.floor(total / diastolic.length);
+      return 0;
     }
-  }
+  },
+  created() {
+      this.$store.dispatch("getAllReadings").then(() => {
+        this.loading = false;
+      });
+    }
 };
 </script>
