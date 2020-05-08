@@ -4,7 +4,10 @@ services:
     build: .
     ports:
       - "9000:9000"
+    environment:
+        - TZ=America/Chicago
   ui:
     build: ui
     ports:
         - "8081:8080"
+   
