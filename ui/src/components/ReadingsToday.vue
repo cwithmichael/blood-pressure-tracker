@@ -10,7 +10,7 @@
       class="text-center"
     >Average Systolic: {{ getAverageSystolic() }} | Average Diastolic: {{ getAverageDiastolic() }}</h4>
     <p v-if="loading" class="text-center">Loading...</p>
-    <div v-else>
+    <div v-else class="table-responsive">
     <table class="table tale-sm table-bordered">
       <thead>
         <tr>
