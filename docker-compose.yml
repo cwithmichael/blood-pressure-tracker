@@ -10,4 +10,6 @@ services:
     build: ui
     ports:
         - "8081:8080"
+    environment:
+        - TZ=America/Chicago
    

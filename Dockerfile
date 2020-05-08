@@ -11,5 +11,4 @@ RUN mvn package
 FROM openjdk:11-jdk-slim
 WORKDIR /code
 COPY --from=maven /build/target/blood_pressure_tracker*.jar ./app.jar
-
 CMD ["java", "-jar", "/code/app.jar"]
