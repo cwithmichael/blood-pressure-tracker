@@ -2,7 +2,6 @@ package com.cwithmichael.blood_pressure_tracker;
 
 import lombok.Data;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;

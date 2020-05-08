@@ -14,7 +14,7 @@ public class LoadDatabase {
   CommandLineRunner initDatabase(ReadingRepository repository) {
     return args -> {
       log.info("Preloading " + repository.save(new Reading(120, 60, 60)));
-      log.info("Preloading " + repository.save(new Reading(120, 60, 60)));
+      log.info("Preloading " + repository.save(new Reading(115, 65, 58)));
     };
   }
 }
