@@ -5,6 +5,7 @@
       class="text-center"
       style="margin-top:20px; font-family: 'Libre Baskerville', serif;"
     >Today's Readings</h3>
+    <hr/>
     <h4
       class="text-center"
     >Average Systolic: {{ getAverageSystolic() }} | Average Diastolic: {{ getAverageDiastolic() }}</h4>

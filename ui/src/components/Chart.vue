@@ -1,6 +1,7 @@
 <template>
   <div id="history" class="small" style="margin-top:20px">
-    <h2 class="text-center">History</h2>
+    <h2 class="text-center" style="font-family: 'Libre Baskerville', serif;">History</h2>
+    <hr/>
     <div class="container-fluid text-center">
       <line-chart v-if="doneLoading" :chart-data="datacollection" :options="options"></line-chart>
       <p v-else class="text-center">Loading</p>
