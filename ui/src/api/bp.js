@@ -3,7 +3,7 @@ import axios from "axios";
 export default {
     getReadings (cb) {
         axios
-      .get("http://localhost:8080/readings")
+      .get("http://0.0.0.0:9000/readings")
       .then(response => {
         cb(response.data);
       })
@@ -14,7 +14,7 @@ export default {
     },
     addReading (cb, reading) {
         axios
-        .post("http://localhost:8080/readings", {
+        .post("http://0.0.0.0:9000/readings", {
           systolic: reading.systolic,
           diastolic: reading.diastolic,
           pulse: reading.pulse
@@ -28,7 +28,7 @@ export default {
     },
     deleteReading (cb, id) {
       axios
-        .delete("http://localhost:8080/readings/" + id)
+        .delete("http://0.0.0.0:9000/readings/" + id)
         .then(response => cb(response.data))
         .catch(error => console.log(error));
     },

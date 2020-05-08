@@ -1,11 +1,13 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import createPersistedState from "vuex-persistedstate"
 import bp from '../api/bp.js'
 Vue.use(Vuex)
 
 const debug = process.env.NODE_ENV !== 'production'
 
 const store = new Vuex.Store({
+  plugins: [createPersistedState()],
   state: {
     readings: []
   },
