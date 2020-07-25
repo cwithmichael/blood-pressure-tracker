@@ -1,6 +1,5 @@
 # Blood Pressure Tracker
-An app to track blood pressure readings (Spring Boot + Vue)
-
+An app to track blood pressure readings (Go + Vue)
 
 ## Requirements
 
@@ -30,3 +29,9 @@ Go to http://localhost:8081 once everything is running
 ![Screenshot 2020-07-25 at 16 51 47](https://user-images.githubusercontent.com/1703143/88466964-5df5e100-ce97-11ea-8680-c88032e2aa57.png)
 
 ![Screenshot 2020-07-25 at 16 52 02](https://user-images.githubusercontent.com/1703143/88466965-61896800-ce97-11ea-802a-822c6eccf420.png)
+
+
+## TODO
+
+- Use a DB
+- Add legend to chart
