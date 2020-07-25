@@ -8,15 +8,11 @@ import store from './store'
 
 Vue.config.productionTip = false
 Vue.use(VueRouter)
+Vue.use(require('vue-chartist'))
 
-const routes = [{
-    path: '/today',
-    component: ReadingsToday
-  },
-  {
-    path: '/history',
-    component: Chart
-  },
+const routes = [
+  { path: '/today', component: ReadingsToday },
+  { path: '/history', component: Chart },
   { path: '*', redirect: '/today' }
 ]
 

@@ -1,7 +1,13 @@
 <template>
   <div id="add-reading" class="text-center">
-    <form style="background-color: white;" v-if="userRequested" class="text-center" id="readings" @submit.prevent="processForm">
-      <br/>
+    <form
+      style="background-color: white;"
+      v-if="userRequested"
+      class="text-center"
+      id="readings"
+      @submit.prevent="processForm"
+    >
+      <br />
       <div class="row">
         <div class="col"></div>
         <div class="col text-center">
@@ -32,9 +38,12 @@
         <div class="col"></div>
       </div>
     </form>
-     <button v-if="!userRequested" class="btn btn-success" type="button" v-on:click="toggleUserRequest">
-    Add New Readings for Today
-    </button>
+    <button
+      v-if="!userRequested"
+      class="btn btn-success"
+      type="button"
+      v-on:click="toggleUserRequest"
+    >Add New Readings for Today</button>
   </div>
 </template>
 
@@ -49,7 +58,7 @@ export default {
     };
   },
   methods: {
-    toggleUserRequest(){
+    toggleUserRequest() {
       this.userRequested = !this.userRequested;
     },
     processForm() {
@@ -64,10 +73,10 @@ export default {
       this.$store.dispatch("addReading", {
         systolic: this.systolic,
         diastolic: this.diastolic,
-        pulse: this.pulse
+        pulse: this.pulse,
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
