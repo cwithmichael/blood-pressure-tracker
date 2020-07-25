@@ -42,18 +42,27 @@ const store = new Vuex.Store({
   },
   getters: {
     readingsForToday: state => {
-      return state.readings.filter(reading => {
-        var now = new Date();
-        var d = new Date(reading.createdDate);
-        return now.getDate() === d.getDate();
-      });
+      if (state.readings) {
+        var sortedReadings = [...state.readings].sort((a,b) => a.readingDate - b.readingDate)
+        return sortedReadings.filter(reading => {
+          var now = new Date();
+          var d = new Date(reading.readingDate * 1000);
+          return now.getDate() === d.getDate();
+        });
+      } else {
+        return []
+      }
     },
     readingsExcludingToday: state => {
-      return state.readings.filter(reading => {
-        var now = new Date();
-        var d = new Date(reading.createdDate);
-        return now.getDate() !== d.getDate();
-      });
+      if (state.readings) {
+        return state.readings.filter(reading => {
+          var now = new Date();
+          var d = new Date(reading.readingDate * 1000);
+          return now.getDate() !== d.getDate();
+        });
+      } else {
+        return []
+      }
     }
   },
   mutations: {
@@ -61,7 +70,9 @@ const store = new Vuex.Store({
       state.readings = readings;
     },
     addReading(state, reading) {
-      state.readings = [...state.readings, reading]
+      if (state.readings && state.readings.length > 0)
+        state.readings = [...state.readings, reading]
+      else state.readings = [reading]
     },
     deleteReading(state, id) {
       state.readings = state.readings.filter(r => {

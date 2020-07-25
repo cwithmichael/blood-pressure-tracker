@@ -5,41 +5,41 @@
       class="text-center"
       style="margin-top:20px; font-family: 'Libre Baskerville', serif;"
     >Today's Readings</h3>
-    <hr/>
+    <hr />
     <h4
       class="text-center"
     >Average Systolic: {{ getAverageSystolic() }} | Average Diastolic: {{ getAverageDiastolic() }}</h4>
-    <p v-if="loading" class="text-center">Loading...</p>
+    <p v-if="!readingsForToday" class="text-center">Loading...</p>
     <div v-else class="table-responsive">
-    <table class="table tale-sm table-bordered">
-      <thead>
-        <tr>
-          <th scope="col">Systolic</th>
-          <th scope="col">Diastolic</th>
-          <th scope="col">Pulse</th>
-          <th scope="col">Time</th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="reading in readingsForToday"
-          v-bind:class="getReadingClass(reading)"
-          v-bind:key="reading.id"
-        >
-          <td>{{ reading.systolic }}</td>
-          <td>{{ reading.diastolic }}</td>
-          <td>{{ reading.pulse }}</td>
-          <td>{{ prettifyDate(reading.createdDate) }}</td>
-          <td>
-            <button v-on:click="deleteReading(reading)" class="btn btn-danger">
-              Delete
-              Reading
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      <table class="table tale-sm table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">Systolic</th>
+            <th scope="col">Diastolic</th>
+            <th scope="col">Pulse</th>
+            <th scope="col">Time</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="reading in readingsForToday"
+            v-bind:class="getReadingClass(reading)"
+            v-bind:key="reading.id"
+          >
+            <td>{{ reading.systolic }}</td>
+            <td>{{ reading.diastolic }}</td>
+            <td>{{ reading.pulse }}</td>
+            <td>{{ prettifyDate(reading.readingDate) }}</td>
+            <td>
+              <button v-on:click="deleteReading(reading)" class="btn btn-danger">
+                Delete
+                Reading
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <AddReading />
   </div>
@@ -52,23 +52,26 @@ import moment from "moment";
 
 export default {
   components: {
-    AddReading
+    AddReading,
   },
   computed: {
-    ...mapGetters(["readingsForToday"])
+    ...mapGetters(["readingsForToday"]),
   },
   data() {
     return {
       readingAdded: false,
       averageSystolic: 0,
       averageDiastolic: 0,
-      loading: true
+      loading: true,
     };
+  },
+  created () {
+      this.$store.dispatch('getAllReadings')
   },
   methods: {
     ...mapActions(["deleteReading"]),
     prettifyDate(date) {
-      return moment(date).format("h:mm:ss a");
+      return moment(date * 1000).format("h:mm:ss a");
     },
     getReadingClass(reading) {
       if (reading.systolic > 120 || reading.diastolic > 80) {
@@ -78,27 +81,26 @@ export default {
     },
     getAverageSystolic() {
       var systolic = [];
-      this.readingsForToday.forEach(reading => {
-        systolic.push(reading.systolic);
-      });
+      if (this.readingsForToday) {
+        this.readingsForToday.forEach((reading) => {
+          systolic.push(reading.systolic);
+        });
+      }
       var total = systolic.reduce((acc, c) => acc + c, 0);
       if (systolic.length > 0) return Math.floor(total / systolic.length);
       return 0;
     },
     getAverageDiastolic() {
       var diastolic = [];
-      this.readingsForToday.forEach(reading => {
-        diastolic.push(reading.diastolic);
-      });
+      if (this.readingsForToday) {
+        this.readingsForToday.forEach((reading) => {
+          diastolic.push(reading.diastolic);
+        });
+      }
       var total = diastolic.reduce((acc, c) => acc + c, 0);
       if (diastolic.length > 0) return Math.floor(total / diastolic.length);
       return 0;
-    }
+    },
   },
-  created() {
-      this.$store.dispatch("getAllReadings").then(() => {
-        this.loading = false;
-      });
-    }
 };
 </script>
