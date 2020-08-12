@@ -1,5 +1,5 @@
 # Blood Pressure Tracker
-An app to track blood pressure readings (Go + Vue)
+An app to track blood pressure readings (Go + Redis + Vue)
 
 ## Requirements
 
