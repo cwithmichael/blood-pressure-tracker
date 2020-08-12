@@ -40,12 +40,19 @@ func (r *DS) AllReadings() ([]*Reading, error) {
 				reading.ReadingDate = int64(date)
 			}
 		}
+
+		if err != nil {
+			return nil, err
+		}
 		readings = append(readings, reading)
 	}
 	return readings, nil
 }
 
 func (r *DS) AddReading(reading *Reading) error {
+	if reading == nil {
+		return errors.New("Reading is nil")
+	}
 	reading.ReadingDate = time.Now().Unix()
 	count, err := redis.Int(r.Do("GET", "readings-count"))
 	if err != nil {
