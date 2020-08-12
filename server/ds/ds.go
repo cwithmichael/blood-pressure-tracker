@@ -1,4 +1,4 @@
-package models
+package ds
 
 import (
 	"github.com/gomodule/redigo/redis"

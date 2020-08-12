@@ -1,85 +1,29 @@
 package main
 
 import (
-	"encoding/json"
-	"log"
-	"net/http"
-	"strconv"
-	"strings"
-
-	"github.com/cwithmichael/blood-pressure-tracker/models"
+	"github.com/cwithmichael/blood-pressure-tracker/ds"
+	"github.com/cwithmichael/blood-pressure-tracker/handlers"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
+	"log"
+	"net/http"
 )
 
-type env struct {
-	ds models.Datastore
-}
-
-func (env *env) readingsHandler(w http.ResponseWriter, r *http.Request) {
-	readings, err := env.ds.AllReadings()
-	if err != nil {
-		log.Print(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": "failed to get readings"})
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(readings)
-}
-
-func (env *env) readingsPostHandler(w http.ResponseWriter, r *http.Request) {
-	defer r.Body.Close()
-	decoder := json.NewDecoder(r.Body)
-	reading := &models.Reading{}
-	if err := decoder.Decode(&reading); err != nil {
-		log.Print(err)
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	err := env.ds.AddReading(reading)
-	if err != nil {
-		log.Print(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(reading)
-}
-
-func (env *env) readingsDeleteHandler(w http.ResponseWriter, r *http.Request) {
-	res := strings.Split(r.URL.Path, "/")
-	id, err := strconv.Atoi(res[2])
-	if err != nil {
-		log.Print(err)
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	err = env.ds.DeleteReading(id)
-	if err != nil {
-		log.Print(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	w.WriteHeader(http.StatusNoContent)
-
-}
-
 func main() {
-	ds, err := models.NewDS("redis:6379")
+	ds, err := ds.NewDS("redis:6379")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer ds.Close()
 
-	env := &env{ds}
+	Env := &handlers.Env{ds}
 	r := mux.NewRouter()
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"}, // All origins
 		AllowedMethods: []string{http.MethodGet, http.MethodPost, http.MethodDelete},
 	})
-	r.HandleFunc("/readings", env.readingsHandler).Methods("GET")
-	r.HandleFunc("/readings", env.readingsPostHandler).Methods("POST")
-	r.HandleFunc("/readings/{id:[0-9]+}", env.readingsDeleteHandler).Methods("DELETE")
+	r.HandleFunc("/readings", Env.ReadingsHandler).Methods("GET")
+	r.HandleFunc("/readings", Env.ReadingsPostHandler).Methods("POST")
+	r.HandleFunc("/readings/{id:[0-9]+}", Env.ReadingsDeleteHandler).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":9000", c.Handler(r)))
 }
