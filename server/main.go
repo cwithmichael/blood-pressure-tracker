@@ -12,11 +12,11 @@ import (
 	"github.com/rs/cors"
 )
 
-type Env struct {
+type env struct {
 	ds models.Datastore
 }
 
-func (env *Env) ReadingsHandler(w http.ResponseWriter, r *http.Request) {
+func (env *env) readingsHandler(w http.ResponseWriter, r *http.Request) {
 	readings, err := env.ds.AllReadings()
 	if err != nil {
 		log.Print(err)
@@ -28,7 +28,7 @@ func (env *Env) ReadingsHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(readings)
 }
 
-func (env *Env) ReadingsPostHandler(w http.ResponseWriter, r *http.Request) {
+func (env *env) readingsPostHandler(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	decoder := json.NewDecoder(r.Body)
 	reading := &models.Reading{}
@@ -47,7 +47,7 @@ func (env *Env) ReadingsPostHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(reading)
 }
 
-func (env *Env) ReadingsDeleteHandler(w http.ResponseWriter, r *http.Request) {
+func (env *env) readingsDeleteHandler(w http.ResponseWriter, r *http.Request) {
 	res := strings.Split(r.URL.Path, "/")
 	id, err := strconv.Atoi(res[2])
 	if err != nil {
@@ -72,14 +72,14 @@ func main() {
 	}
 	defer ds.Close()
 
-	env := &Env{ds}
+	env := &env{ds}
 	r := mux.NewRouter()
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"}, // All origins
 		AllowedMethods: []string{http.MethodGet, http.MethodPost, http.MethodDelete},
 	})
-	r.HandleFunc("/readings", env.ReadingsHandler).Methods("GET")
-	r.HandleFunc("/readings", env.ReadingsPostHandler).Methods("POST")
-	r.HandleFunc("/readings/{id:[0-9]+}", env.ReadingsDeleteHandler).Methods("DELETE")
+	r.HandleFunc("/readings", env.readingsHandler).Methods("GET")
+	r.HandleFunc("/readings", env.readingsPostHandler).Methods("POST")
+	r.HandleFunc("/readings/{id:[0-9]+}", env.readingsDeleteHandler).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":9000", c.Handler(r)))
 }

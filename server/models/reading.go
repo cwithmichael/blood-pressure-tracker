@@ -15,6 +15,7 @@ type Reading struct {
 	ReadingDate int64 `json:"readingDate"`
 }
 
+// AllReadings returns all of the blood pressure readings currently in the store
 func (r *DS) AllReadings() ([]*Reading, error) {
 	var readings []*Reading
 	keys, err := redis.Strings(r.Do("SMEMBERS", "readings"))
@@ -49,27 +50,41 @@ func (r *DS) AllReadings() ([]*Reading, error) {
 	return readings, nil
 }
 
+// AddReading adds a Reading to the store
 func (r *DS) AddReading(reading *Reading) error {
 	if reading == nil {
-		return errors.New("Reading is nil")
+		return errors.New("reading is nil")
 	}
-	reading.ReadingDate = time.Now().Unix()
 	count, err := redis.Int(r.Do("GET", "readings-count"))
 	if err != nil {
+		// Probably means we haven't set the count yet
 		_, err = r.Do("SET", "readings-count", 0)
+		if err != nil {
+			return err
+		}
 	}
 
 	reading.ID = count
+	reading.ReadingDate = time.Now().Unix()
 	countStr := strconv.Itoa(count)
 	redisKey := "reading:" + countStr
+	// Add the reading to our store
 	_, err = r.Do("HMSET", redisKey,
 		"systolic", reading.Systolic,
 		"diastolic", reading.Diastolic,
 		"pulse", reading.Pulse,
 		"reading-date", reading.ReadingDate)
-	_, err = r.Do("SADD", "readings", redisKey)
-	_, err = r.Do("INCR", "readings-count")
+	if err != nil {
 
+		return err
+	}
+	// Create a set to hold our readings
+	_, err = r.Do("SADD", "readings", redisKey)
+	if err != nil {
+		return err
+	}
+	// Increment the number of readings
+	_, err = r.Do("INCR", "readings-count")
 	if err != nil {
 		return err
 	}
@@ -77,6 +92,7 @@ func (r *DS) AddReading(reading *Reading) error {
 	return nil
 }
 
+// DeleteReading removes a Reading from the store based on the supplied id
 func (r *DS) DeleteReading(id int) error {
 	idStr := strconv.Itoa(id)
 	exists, err := redis.Bool(r.Do("HEXISTS", "reading:"+idStr, "sytolic"))
