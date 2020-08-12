@@ -95,11 +95,8 @@ func (r *DS) AddReading(reading *Reading) error {
 // DeleteReading removes a Reading from the store based on the supplied id
 func (r *DS) DeleteReading(id int) error {
 	idStr := strconv.Itoa(id)
-	exists, err := redis.Bool(r.Do("HEXISTS", "reading:"+idStr, "sytolic"))
-	if err != nil || !exists {
-		return errors.New("Unable to delete the requested reading: " + idStr)
-	}
-	_, err = r.Do("DEL", "reading:"+idStr)
+	readingKey := "reading:" + idStr
+	_, err := r.Do("DEL", readingKey)
 	if err != nil {
 		return err
 	}
