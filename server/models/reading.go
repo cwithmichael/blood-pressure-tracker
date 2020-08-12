@@ -64,9 +64,9 @@ func (r *DS) AddReading(reading *Reading) error {
 		}
 	}
 
-	reading.ID = count
+	reading.ID = count + 1
 	reading.ReadingDate = time.Now().Unix()
-	countStr := strconv.Itoa(count)
+	countStr := strconv.Itoa(count + 1)
 	redisKey := "reading:" + countStr
 	// Add the reading to our store
 	_, err = r.Do("HMSET", redisKey,
