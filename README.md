@@ -22,7 +22,7 @@ Or if you'd like for the services to run in the background:
 **Note:** The first time you run this it takes a while 
 
 
-Go to http://localhost:8081 once everything is running
+Go to http://localhost:8080 once everything is running
 
 ## Screenshots
 
@@ -33,5 +33,5 @@ Go to http://localhost:8081 once everything is running
 
 ## TODO
 
-- Use a DB
 - Add legend to chart
+- Allow users to edit readings (PUT)

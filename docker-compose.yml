@@ -2,6 +2,8 @@ version: '3'
 services:
   web:
     build: .
+    depends_on:
+      - redis
     ports:
       - "9000:9000"
     environment:
@@ -9,7 +11,7 @@ services:
   ui:
     build: ui
     ports:
-        - "8081:8080"
+        - "8080:8080"
     environment:
         - TZ=America/Chicago
   redis:
